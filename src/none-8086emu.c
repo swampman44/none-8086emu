@@ -9,10 +9,9 @@ memory_t memory;
 
 void runOnInit()
 {
-  allocateMemoryOnInit(memory_t memory);
+  allocateMemoryOnInit(memory);
   populateRegistersOnInit(registers);
-  populateMemoryOnInit(memory);
-  freeMemoryOnShutdown(memory_t memory)
+  freeMemoryOnShutdown(memory);
 }
 
 int main(int argc, char* argv[])

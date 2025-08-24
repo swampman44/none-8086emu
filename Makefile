@@ -25,4 +25,10 @@ clean:
 run: $(TARGET)
 	./$(TARGET)
 
+debug:
+	gdb ./$(TARGET)
+
+leakcheck:
+	valgrind --leak-check=full ./$(TARGET)
+
 .PHONY: all clean run

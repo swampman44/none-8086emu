@@ -81,13 +81,13 @@ void setFlagsRegistersOverflow(registers_t registers, bool value)
 
 void insertBinaryIntoMemory(const char* filename, memory_t memory)
 {
-  uint32_t fp, rc, ii;
-  uint32_t* ptr;
-  struct stats st;
-  size_t size;
-
-  fp = open(filename, O_RDWR);
-  rc = fstat(fp, &st);
-  fprintf(stderr, "stat() = %d\n", rc);
-  
+  FILE* file = fopen(filename, "rb");
+  if(file != NULL) {
+    fseek(file, 0x100, SEEK_SET);
+    size_t bytesRead = fread(memory.ram, 1, sizeof(memory.ram), file);
+    fclose(file);
+  } else {
+    fprintf(stderr, "Error creating file pointer.");
+    perror("Cannot open file.");
+  }
 }
