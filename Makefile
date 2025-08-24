@@ -1,3 +1,4 @@
+NAME := none-8086emu
 CC := cc
 SRC_DIR := src
 DST_DIR := dst
@@ -7,7 +8,7 @@ LDFLAGS := $(pkg-config --cflags --libs sdl2)
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(DST_DIR)/%.o, $(SRCS))
-TARGET := $(DST_DIR)/program
+TARGET := $(DST_DIR)/$(NAME)
 
 all: $(TARGET)
 

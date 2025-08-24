@@ -2,8 +2,14 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "cpu.h"
+#include "memory.h"
+
+#define SET_BIT(x, pos) x ^= (1U << pos)
+#define CLEAR_BIT(x, pos) (x &= (~(1U<< pos)))
+#define GET_BIT(x, pos) ((x & ( 1 << pos)) >> pos)
 
 void populateRegistersOnInit(registers_t registers)
 {
@@ -24,4 +30,64 @@ void populateRegistersOnInit(registers_t registers)
   registers.es = 0x00000;
 
   registers.flags = 0x00000;
+}
+
+// functions to set various flags in register.flags.
+void setFlagsRegisterCarry(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 0); }
+  if(!value) { CLEAR_BIT(registers.flags, 0); }
+}
+void setFlagsRegisterParity(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 2); }
+  if(!value) { CLEAR_BIT(registers.flags, 2); }
+}
+void setFlagsRegistersAuxiliary(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 4); }
+  if(!value) { CLEAR_BIT(registers.flags, 4); }
+}
+void setFlagsRegistersZero(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 6); }
+  if(!value) { CLEAR_BIT(registers.flags, 6); }
+}
+void setFlagsRegistersSign(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 7); }
+  if(!value) { CLEAR_BIT(registers.flags, 7); }
+}
+void setFlagsRegistersTrap(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 8); }
+  if(!value) { CLEAR_BIT(registers.flags, 8); }
+}
+void setFlagsRegistersInterrupt(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 9); }
+  if(!value) { CLEAR_BIT(registers.flags, 9); }
+}
+void setFlagsRegistersDirection(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 10); }
+  if(!value) { CLEAR_BIT(registers.flags, 10); }
+}
+void setFlagsRegistersOverflow(registers_t registers, bool value)
+{
+  if(value) { SET_BIT(registers.flags, 11); }
+  if(!value) { CLEAR_BIT(registers.flags, 11); }
+}
+
+void insertBinaryIntoMemory(const char* filename, memory_t memory)
+{
+  uint32_t fp, rc, ii;
+  uint32_t* ptr;
+  struct stats st;
+  size_t size;
+
+  fp = open(filename, O_RDWR);
+  rc = fstat(fp, &st);
+  fprintf(stderr, "stat() = %d\n", rc);
+  
 }
