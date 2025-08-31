@@ -3,7 +3,7 @@ CC := cc
 SRC_DIR := src
 DST_DIR := dst
 
-CCFLAGS := -Wall -Wextra -pedantic -std=c99 -Ofast
+CCFLAGS := -Wall -Wextra -pedantic -std=c99 -Ofast -g
 LDFLAGS := $(pkg-config --cflags --libs sdl2)
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)

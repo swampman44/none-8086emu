@@ -6,13 +6,13 @@
 #define MEMORY_SIZE 1024 * 1024
 
 typedef struct Memory{
-  int* ram;
+  uint32_t* ram;
   size_t ramSize;
 } memory_t;
 
-void allocateMemoryOnInit(memory_t memory);
-void freeMemoryOnShutdown(memory_t memory);
-uint32_t readMemoryAddress(memory_t memory, uint32_t memoryAddress);
-void writeMemoryAddress(memory_t memory, uint32_t memoryAddress, uint8_t value);
+void allocateMemoryOnInit(memory_t* memory);
+void freeMemoryOnShutdown(memory_t* memory);
+uint32_t readMemoryAddress(memory_t* memory, uint32_t memoryAddress);
+void writeMemoryAddress(memory_t* memory, uint32_t memoryAddress, uint8_t value);
 
 #endif // MEMORY_H

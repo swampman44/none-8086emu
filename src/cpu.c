@@ -6,88 +6,123 @@
 
 #include "cpu.h"
 #include "memory.h"
+#include "debug.h"
+
+#define IP_OFFSET 0x100
 
 #define SET_BIT(x, pos) x ^= (1U << pos)
 #define CLEAR_BIT(x, pos) (x &= (~(1U<< pos)))
 #define GET_BIT(x, pos) ((x & ( 1 << pos)) >> pos)
 
-void populateRegistersOnInit(registers_t registers)
+void populateRegistersOnInit(registers_t *registers)
 {
   /* https://en.wikipedia.org/wiki/Reset_vector#x86_family_(Intel) */
-  registers.ip = 0xFFFF0;
+  registers->ip = 0xFFFF0;
 
-  registers.ax = 0x00000;
-  registers.bx = 0x00000;
-  registers.cx = 0x00000;
-  registers.dx = 0x00000;
-  registers.cs = 0x00000; 
-  registers.ss = 0x00000;
-  registers.sp = 0x00000;
-  registers.bp = 0x00000;
-  registers.si = 0x00000;
-  registers.di = 0x00000;
-  registers.ds = 0x00000;
-  registers.es = 0x00000;
+  registers->ax = 0x00000;
+  registers->bx = 0x00000;
+  registers->cx = 0x00000;
+  registers->dx = 0x00000;
+  registers->cs = 0x00000;
+  registers->ss = 0x00000;
+  registers->sp = 0x00000;
+  registers->bp = 0x00000;
+  registers->si = 0x00000;
+  registers->di = 0x00000;
+  registers->ds = 0x00000;
+  registers->es = 0x00000;
 
-  registers.flags = 0x00000;
+  registers->flags = 0x00000;
 }
 
 // functions to set various flags in register.flags.
-void setFlagsRegisterCarry(registers_t registers, bool value)
+void setFlagsRegisterCarry(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 0); }
-  if(!value) { CLEAR_BIT(registers.flags, 0); }
+  if(value) { SET_BIT(registers->flags, 0); }
+  if(!value) { CLEAR_BIT(registers->flags, 0); }
 }
-void setFlagsRegisterParity(registers_t registers, bool value)
+void setFlagsRegisterParity(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 2); }
-  if(!value) { CLEAR_BIT(registers.flags, 2); }
+  if(value) { SET_BIT(registers->flags, 2); }
+  if(!value) { CLEAR_BIT(registers->flags, 2); }
 }
-void setFlagsRegistersAuxiliary(registers_t registers, bool value)
+void setFlagsRegistersAuxiliary(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 4); }
-  if(!value) { CLEAR_BIT(registers.flags, 4); }
+  if(value) { SET_BIT(registers->flags, 4); }
+  if(!value) { CLEAR_BIT(registers->flags, 4); }
 }
-void setFlagsRegistersZero(registers_t registers, bool value)
+void setFlagsRegistersZero(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 6); }
-  if(!value) { CLEAR_BIT(registers.flags, 6); }
+  if(value) { SET_BIT(registers->flags, 6); }
+  if(!value) { CLEAR_BIT(registers->flags, 6); }
 }
-void setFlagsRegistersSign(registers_t registers, bool value)
+void setFlagsRegistersSign(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 7); }
-  if(!value) { CLEAR_BIT(registers.flags, 7); }
+  if(value) { SET_BIT(registers->flags, 7); }
+  if(!value) { CLEAR_BIT(registers->flags, 7); }
 }
-void setFlagsRegistersTrap(registers_t registers, bool value)
+void setFlagsRegistersTrap(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 8); }
-  if(!value) { CLEAR_BIT(registers.flags, 8); }
+  if(value) { SET_BIT(registers->flags, 8); }
+  if(!value) { CLEAR_BIT(registers->flags, 8); }
 }
-void setFlagsRegistersInterrupt(registers_t registers, bool value)
+void setFlagsRegistersInterrupt(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 9); }
-  if(!value) { CLEAR_BIT(registers.flags, 9); }
+  if(value) { SET_BIT(registers->flags, 9); }
+  if(!value) { CLEAR_BIT(registers->flags, 9); }
 }
-void setFlagsRegistersDirection(registers_t registers, bool value)
+void setFlagsRegistersDirection(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 10); }
-  if(!value) { CLEAR_BIT(registers.flags, 10); }
+  if(value) { SET_BIT(registers->flags, 10); }
+  if(!value) { CLEAR_BIT(registers->flags, 10); }
 }
-void setFlagsRegistersOverflow(registers_t registers, bool value)
+void setFlagsRegistersOverflow(registers_t *registers, bool value)
 {
-  if(value) { SET_BIT(registers.flags, 11); }
-  if(!value) { CLEAR_BIT(registers.flags, 11); }
+  if(value) { SET_BIT(registers->flags, 11); }
+  if(!value) { CLEAR_BIT(registers->flags, 11); }
 }
 
-void insertBinaryIntoMemory(const char* filename, memory_t memory)
+void insertBinaryIntoMemory(const char* filename, memory_t *memory)
 {
   FILE* file = fopen(filename, "rb");
   if(file != NULL) {
-    fseek(file, 0x100, SEEK_SET);
-    size_t bytesRead = fread(memory.ram, 1, sizeof(memory.ram), file);
+    fseek(file, IP_OFFSET, SEEK_SET);
+    size_t bytesRead = fread(memory->ram, 1, sizeof(memory->ram), file);
     fclose(file);
   } else {
     fprintf(stderr, "Error creating file pointer.");
     perror("Cannot open file.");
+  }
+}
+
+void processOpcodesAndRunCycles(memory_t *memory, registers_t *registers)
+{
+  registers->ip = IP_OFFSET;
+  for(uint32_t iter = registers->ip; iter <= memory->ramSize - 1; iter++) {
+    uint32_t currentOpcode = memory->ram[registers->ip];
+    registers->ip += 1;
+    switch(currentOpcode) {
+      /* NOP */
+    case 0x90:
+      continue;
+      /* HLT */
+    case 0xF4:
+      break;
+      /* Clear Flags */
+      /* CLC */
+    case 0xF8:
+      setFlagsRegisterCarry(registers, false);
+      break;
+      /* CLD */
+    case 0xFC:
+      setFlagsRegistersDirection(registers, false);
+      break;
+      /* CLI */
+    case 0xFA:
+      setFlagsRegistersInterrupt(registers, false);
+      break;
+    default:
+      break;
+    }
   }
 }

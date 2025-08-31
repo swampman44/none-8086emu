@@ -11,7 +11,7 @@
 
 typedef struct Registers {
   uint32_t ip;
-  uint32_t sp;
+  uint32_t sp;2
 
   uint32_t ax;
   uint32_t bx;
@@ -28,20 +28,25 @@ typedef struct Registers {
   uint32_t flags;
 } registers_t;
 
-void populateRegistersOnInit(registers_t registers);
+typedef struct CPU {
+  uint32_t totalCycles;
+} cpu_t;
+
+
+void populateRegistersOnInit(registers_t* registers);
 
 // Functions to set various Flags in register.flags.
-void setFlagsRegisterCarry(registers_t registers, bool value);
-void setFlagsRegisterParity(registers_t registers, bool value);
-void setFlagsRegistersAuxiliary(registers_t registers, bool value);
-void setFlagsRegistersZero(registers_t registers, bool value);
-void setFlagsRegistersSign(registers_t registers, bool value);
-void setFlagsRegistersTrap(registers_t registers, bool value);
-void setFlagsRegistersInterrupt(registers_t registers, bool value);
-void setFlagsRegistersDirection(registers_t registers, bool value);
-void setFlagsRegistersOverflow(registers_t registers, bool value);
+void setFlagsRegisterCarry(registers_t* registers, bool value);
+void setFlagsRegisterParity(registers_t* registers, bool value);
+void setFlagsRegistersAuxiliary(registers_t* registers, bool value);
+void setFlagsRegistersZero(registers_t* registers, bool value);
+void setFlagsRegistersSign(registers_t* registers, bool value);
+void setFlagsRegistersTrap(registers_t* registers, bool value);
+void setFlagsRegistersInterrupt(registers_t* registers, bool value);
+void setFlagsRegistersDirection(registers_t* registers, bool value);
+void setFlagsRegistersOverflow(registers_t* registers, bool value);
 
-void insertBinaryIntoMemory(const char* filename, memory_t memory);
-void processOpcodes(memory_t memory);
+void insertBinaryIntoMemory(const char* filename, memory_t *memory);
+void processOpcodesAndRunCycles(memory_t* memory, registers_t *registers);
 
 #endif // CPU_H
