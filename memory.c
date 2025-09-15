@@ -23,7 +23,7 @@ void freeMemoryOnShutdown(memory_t* memory)
 
 uint32_t readMemoryAddress(memory_t* memory, uint32_t memoryAddress)
 {
-  memory->ram[memoryAddress];
+  return memory->ram[memoryAddress];
 }
 
 void writeMemoryAddress(memory_t* memory, uint32_t memoryAddress, uint8_t value)

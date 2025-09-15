@@ -1,0 +1,27 @@
+.POSIX:
+.OBJDIR: build
+
+TARGET = none-8086emu
+CC = cc
+
+BUILD_DIR = build
+
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -Ofast
+SRC = memory.c cpu.c debug.c none-8086emu.c
+OBJ = memory.o cpu.o debug.o none-8086emu.o
+
+HDR = memory.h cpu.h debug.h 
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TARGET)  $(OBJ)
+
+.c.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJ) $(TARGET)
+
+.PHONY: all clean
+

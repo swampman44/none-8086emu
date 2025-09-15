@@ -13,11 +13,12 @@
 #define SET_BIT(x, pos) x ^= (1U << pos)
 #define CLEAR_BIT(x, pos) (x &= (~(1U<< pos)))
 #define GET_BIT(x, pos) ((x & ( 1 << pos)) >> pos)
+#define INC(regname) regname++
 
 void populateRegistersOnInit(registers_t *registers)
 {
   /* https://en.wikipedia.org/wiki/Reset_vector#x86_family_(Intel) */
-  registers->ip = 0xFFFF0;
+  registers->ip = IP_OFFSET;
 
   registers->ax = 0x00000;
   registers->bx = 0x00000;
@@ -86,8 +87,9 @@ void insertBinaryIntoMemory(const char* filename, memory_t *memory)
 {
   FILE* file = fopen(filename, "rb");
   if(file != NULL) {
-    fseek(file, IP_OFFSET, SEEK_SET);
-    size_t bytesRead = fread(memory->ram, 1, sizeof(memory->ram), file);
+    //fseek(file, IP_OFFSET, SEEK_SET);
+    //fread(memory->ram, 1, sizeof(memory->ram), file);
+    fread(memory->ram + IP_OFFSET, 1, sizeof(memory->ram), file);
     fclose(file);
   } else {
     fprintf(stderr, "Error creating file pointer.");
@@ -120,6 +122,38 @@ void processOpcodesAndRunCycles(memory_t *memory, registers_t *registers)
       /* CLI */
     case 0xFA:
       setFlagsRegistersInterrupt(registers, false);
+      break;
+      /* INC AX */
+    case 0x40:
+      INC(registers->ax);
+      break;
+      /* INC CX */
+    case 0x41:
+      INC(registers->cx);
+      break;
+      /* INC DX */
+    case 0x42:
+      INC(registers->dx);
+      break;
+      /* INC BX */
+    case 0x43:
+      INC(registers->bx);
+      break;
+    case 0x44:
+      /* INC SP */
+      INC(registers->sp);
+      break;
+      /* INC BP */
+    case 0x45:
+      INC(registers->bp);
+      break;
+      /* INC SI */
+    case 0x46:
+      INC(registers->si);
+      break;
+      /* INC DI */
+    case 0x47:
+      INC(registers->di);
       break;
     default:
       break;

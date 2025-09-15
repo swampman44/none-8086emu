@@ -1,3 +1,4 @@
+
 #ifndef MEMORY_H
 #define MEMORY_H
 
@@ -6,7 +7,7 @@
 #define MEMORY_SIZE 1024 * 1024
 
 typedef struct Memory{
-  uint32_t* ram;
+  uint16_t* ram;
   size_t ramSize;
 } memory_t;
 

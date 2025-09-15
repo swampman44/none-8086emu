@@ -1,6 +1,6 @@
 #include "cpu.h"
 
-#define PR(NAME, REG) printf("\n %s: %d ", NAME, REG)
+#define PR(NAME, REG) printf("\n %s: %x ", NAME, REG)
 
 
 void dumpCurrentRegisters(registers_t* registers)

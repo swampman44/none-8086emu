@@ -11,7 +11,7 @@
 
 typedef struct Registers {
   uint32_t ip;
-  uint32_t sp;2
+  uint32_t sp;
 
   uint32_t ax;
   uint32_t bx;

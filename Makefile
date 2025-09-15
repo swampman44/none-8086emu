@@ -1,34 +1,28 @@
-NAME := none-8086emu
-CC := cc
-SRC_DIR := src
-DST_DIR := dst
+.POSIX:
+.OBJDIR: build
 
-CCFLAGS := -Wall -Wextra -pedantic -std=c99 -Ofast -g
-LDFLAGS := $(pkg-config --cflags --libs sdl2)
+CC = cc
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
 
-SRCS := $(wildcard $(SRC_DIR)/*.c)
-OBJS := $(patsubst $(SRC_DIR)/%.c, $(DST_DIR)/%.o, $(SRCS))
-TARGET := $(DST_DIR)/$(NAME)
+all: none-8086emu
 
-all: $(TARGET)
+none-8086emu: build/none-8086emu.o build/cpu.o build/memory.o build/debug.o
+	$(CC) $(CFLAGS) build/none-8086emu.o build/cpu.o build/memory.o \
+			build/debug.o -o none-8086emu
 
-$(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+build/none-8086emu.o: none-8086emu.c
+	$(CC) $(CFLAGS) -c none-8086emu.c -o build/none-8086emu.o
 
-$(DST_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(DST_DIR)
-	$(CC) $(CLFAGS) -c $< -o $@
+build/memory.o: memory.h memory.c
+	$(CC) $(CFLAGS) -c memory.c -o build/memory.o
+
+build/cpu.o: cpu.h cpu.c
+	$(CC) $(CFLAGS) -c cpu.c -o build/cpu.o
+
+build/debug.o: debug.h debug.c
+	$(CC) $(CFLAGS) -c debug.c -o build/debug.o
 
 clean:
-	rm -rf $(DST_DIR)/*.o $(TARGET)
+	rm -f build/* none-8086emu 
 
-run: $(TARGET)
-	./$(TARGET)
-
-debug:
-	gdb ./$(TARGET)
-
-leakcheck:
-	valgrind --leak-check=full ./$(TARGET)
-
-.PHONY: all clean run
+.PHONY: all clean
