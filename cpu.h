@@ -47,6 +47,6 @@ void setFlagsRegistersDirection(registers_t* registers, bool value);
 void setFlagsRegistersOverflow(registers_t* registers, bool value);
 
 void insertBinaryIntoMemory(const char* filename, memory_t *memory);
-void processOpcodesAndRunCycles(memory_t* memory, registers_t *registers);
+void processOpcodesAndRunCycles(memory_t* memory, registers_t* registers);
 
 #endif // CPU_H

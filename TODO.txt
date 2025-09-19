@@ -4,6 +4,7 @@ necessary:
 - make a simple debugger that shows the current registers and stack/instruction pointer
 
 possible things for the future:
+- add pledge and unveil for OpenBSD
 - possibly implement undocumented opcodes
 - make a GUI interface
   - (with high abstraction so it can be ported to as many graphics libraries as possible, with a priority for SDl2/raylib)

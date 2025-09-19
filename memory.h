@@ -7,7 +7,7 @@
 #define MEMORY_SIZE 1024 * 1024
 
 typedef struct Memory{
-  uint16_t* ram;
+  uint8_t* ram;
   size_t ramSize;
 } memory_t;
 
