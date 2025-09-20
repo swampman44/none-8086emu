@@ -62,19 +62,27 @@ void processOpcodesAndRunCycles(memory_t* memory, registers_t* registers)
     uint32_t currentOpcode = memory->ram[registers->ip];
     registers->ip += 1;
     switch(currentOpcode) {
-    case 0x90: continue;
-    case 0xF4: break;
-    case 0xF8: CLC(registers->flags); break;
-    case 0xFC: CLD(registers->flags); break;
-    case 0xFA: CLI(registers->flags); break;
-    case 0x40: INC(registers->ax); break;
-    case 0x41: INC(registers->cx); break;
-    case 0x42: INC(registers->dx); break;
-    case 0x43: INC(registers->bx); break;
-    case 0x44: INC(registers->sp); break;
-    case 0x45: INC(registers->bp); break;
-    case 0x46: INC(registers->si); break;
-    case 0x47: INC(registers->di); break;
+	case 0x90: continue;
+	case 0xF4: break;
+	case 0xF8: CLC(registers->flags); break; 
+	case 0xFC: CLD(registers->flags); break;
+	case 0xFA: CLI(registers->flags); break;
+	case 0x40: INC(registers->ax); break;
+	case 0x41: INC(registers->cx); break;
+	case 0x42: INC(registers->dx); break;
+	case 0x43: INC(registers->bx); break;
+	case 0x44: INC(registers->sp); break;
+	case 0x45: INC(registers->bp); break;
+	case 0x46: INC(registers->si); break;
+	case 0x47: INC(registers->di); break;
+	case 0x48: DEC(registers->ax); break; 
+	case 0x49: DEC(registers->cx); break;
+	case 0x4A: DEC(registers->dx); break;
+	case 0x4B: DEC(registers->bx); break;
+	case 0x4C: DEC(registers->sp); break;
+	case 0x4D: DEC(registers->bp); break;
+	case 0x4E: DEC(registers->si); break;
+	case 0x4F: DEC(registers->di); break;
     default: break;
     }
   }
