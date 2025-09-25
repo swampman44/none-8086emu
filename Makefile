@@ -2,7 +2,7 @@
 .OBJDIR: build
 
 CC = cc
-CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -O3 -fdiagnostics-color
 
 all: none-8086emu
 

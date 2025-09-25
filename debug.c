@@ -1,7 +1,6 @@
 #include "cpu.h"
 
-#define PR(NAME, REG) printf("\n %s: %x ", NAME, REG)
-
+#define PR(NAME, REG) printf("\n %s: %d ", NAME, REG)
 
 void dumpCurrentRegisters(registers_t* registers)
 {
@@ -11,13 +10,10 @@ void dumpCurrentRegisters(registers_t* registers)
   PR("BX", registers->bx);
   PR("CX", registers->cx);
   PR("DX", registers->dx);
-  PR("CS", registers->cs);
-  PR("SS", registers->ss);
-  PR("BP", registers->bp);
-  PR("SI", registers->si);
-  PR("DI", registers->di);
-  PR("DS", registers->ds);
-  PR("ES", registers->es);
+  PR("CS", registers->bp);
+  PR("SS", registers->si);
+  PR("BP", registers->di);
 
   PR("FLAGS", registers->flags);
 } 
+
