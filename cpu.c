@@ -24,7 +24,6 @@
 #define CLEAR_BIT(x, pos) (x &= (~(1U << pos)))
 #define GET_BIT(x, pos) ((x & ( 1 << pos)) >> pos)
 
-
 void populateRegistersOnInit(registers_t* registers)
 {
   /* https://en.wikipedia.org/wiki/Reset_vector#x86_family_(Intel) */
@@ -73,6 +72,31 @@ uint8_t value)
   return result; 
 }
 
+static inline uint8_t decrementRegister(registers_t* registers,
+uint8_t value)
+{
+  uint8_t result = value - 1;
+  if((result & 0xF) != 0) SET_BIT(registers->flags, FLAG_POS_AUXILIARY);
+  else CLEAR_BIT(registers->flags, FLAG_POS_AUXILIARY);
+  checkZSP(registers, result);
+  return result;
+}
+
+static inline void pushValueToStack(registers_t* registers, 
+memory_t* memory, const uint16_t value)
+{
+  registers->sp -= 2;
+  writeMemoryAddress(memory, registers->sp, value);
+}
+
+static inline uint16_t popValueFromStack(memory_t* memory, 
+registers_t* registers)
+{
+  uint16_t value = readMemoryAddress(memory, registers->sp);
+  registers->sp += 2;
+  return value;  
+}
+
 void insertBinaryIntoMemory(const char* filename, memory_t* memory)
 {
   FILE* file = fopen(filename, "rb");
@@ -86,9 +110,8 @@ void insertBinaryIntoMemory(const char* filename, memory_t* memory)
 }
 void processOpcodesAndRunCycles(memory_t* memory, registers_t* registers)
 {
-  registers->ip = IP_OFFSET;
-  for(uint32_t iter = registers->ip; iter <= memory->ramSize - 1; iter++) {
-    uint32_t currentOpcode = memory->ram[registers->ip];
+  for(uint32_t iter = registers->ip; iter <= memory->ramSize; iter++) {
+    uint32_t currentOpcode = memory->ram[iter];
     registers->ip += 1;
     switch(currentOpcode) {
      case 0x40: 
@@ -114,8 +137,81 @@ void processOpcodesAndRunCycles(memory_t* memory, registers_t* registers)
        break;
      case 0x47: 
        registers->di = incrementRegister(registers, registers->di); 
-      break; 
-     default: break;
+       break; 
+     case 0x48:
+       registers->ax = decrementRegister(registers, registers->ax);
+       break;
+     case 0x49:
+       registers->cx = decrementRegister(registers, registers->cx);
+       break;
+     case 0x4A:
+       registers->dx = decrementRegister(registers, registers->dx);
+       break;
+     case 0x4B:
+       registers->bx = decrementRegister(registers, registers->ax);
+       break;
+     case 0x4C:
+       registers->sp = decrementRegister(registers, registers->sp);
+       break;
+     case 0x4D:
+       registers->bp = decrementRegister(registers, registers->bp);
+       break;
+     case 0x4E:
+       registers->si = decrementRegister(registers, registers->si);     
+       break;
+     case 0x4F:
+       registers->di = decrementRegister(registers, registers->di);
+       break;
+     case 0x50:
+       pushValueToStack(registers, memory, registers->ax);
+       break;
+     case 0x51:
+       pushValueToStack(registers, memory, registers->cx);
+       break;
+     case 0x52:
+       pushValueToStack(registers, memory, registers->dx); 
+       break;
+     case 0x53:
+       pushValueToStack(registers, memory, registers->bx);
+       break;
+     case 0x54:
+       pushValueToStack(registers, memory, registers->sp);
+       break;
+     case 0x55: 
+       pushValueToStack(registers, memory, registers->bp);
+       break;
+     case 0x56:
+       pushValueToStack(registers, memory, registers->si);
+       break; 
+     case 0x57:
+       pushValueToStack(registers, memory, registers->di);
+       break;
+     case 0x58:
+       registers->ax = popValueFromStack(memory, registers);
+       break;
+     case 0x59:
+       registers->cx = popValueFromStack(memory, registers);
+       break;
+     case 0x5A:
+       registers->dx = popValueFromStack(memory, registers);
+       break;
+     case 0x5B:
+       registers->bx = popValueFromStack(memory, registers);
+       break;   
+     case 0x5C:
+       registers->sp = popValueFromStack(memory, registers);
+       break;
+     case 0x5D:
+       registers->bp = popValueFromStack(memory, registers);
+       break;
+     case 0x5E:
+       registers->si = popValueFromStack(memory, registers);
+       break;
+     case 0x5F:
+       registers->di = popValueFromStack(memory, registers);
+       break; 
+     default:
+       break;
     }
   }
 }

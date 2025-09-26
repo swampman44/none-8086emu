@@ -21,12 +21,12 @@ void freeMemoryOnShutdown(memory_t* memory)
   free(memory->ram);
 }
 
-uint32_t readMemoryAddress(memory_t* memory, uint32_t memoryAddress)
+uint16_t readMemoryAddress(memory_t* memory, uint8_t memoryAddress)
 {
   return memory->ram[memoryAddress];
 }
 
-void writeMemoryAddress(memory_t* memory, uint32_t memoryAddress, uint8_t value)
+void writeMemoryAddress(memory_t* memory, uint8_t memoryAddress, uint16_t value)
 {
   memory->ram[memoryAddress] = value;
 }

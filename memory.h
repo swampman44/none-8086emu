@@ -13,7 +13,7 @@ typedef struct Memory{
 
 void allocateMemoryOnInit(memory_t* memory);
 void freeMemoryOnShutdown(memory_t* memory);
-uint32_t readMemoryAddress(memory_t* memory, uint32_t memoryAddress);
-void writeMemoryAddress(memory_t* memory, uint32_t memoryAddress, uint8_t value);
+uint16_t readMemoryAddress(memory_t* memory, uint8_t memoryAddress);
+void writeMemoryAddress(memory_t* memory, uint8_t memoryAddress, uint16_t value);
 
 #endif // MEMORY_H

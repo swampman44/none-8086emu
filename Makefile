@@ -25,4 +25,4 @@ build/debug.o: debug.h debug.c
 clean:
 	rm -f build/* none-8086emu 
 
-.PHONY: all clean
+.PHONY: all clean run
